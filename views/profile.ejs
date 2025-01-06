@@ -1,0 +1,428 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FindYourArt</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>    
+    <link rel="stylesheet" href="css/profile.css">
+</head>
+
+<body>
+    <nav class="navbar navbar-expand-xl navbar-dark bg-dark py-4">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="/">FindYourArt</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+                ariacontrols="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <% if (user.role === 'admin') { %>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/edit-orders">Замовлення</a>
+                        </li> 
+                        <li class="nav-item">
+                            <a class="nav-link" href="/edit-tables">Категорії</a>
+                        </li> 
+                        <li class="nav-item">
+                            <a class="nav-link" href="/artists-stat">Художники</a>
+                        </li> 
+                    <% } %>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/cart">Кошик</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/profile">Профіль</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/logout">Вийти</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>  
+    <div class="container mt-3">
+        <nav style="--bs-breadcrumb-divider: '>';" aria-label="breadcrumb">
+            <ol class="breadcrumb fs-5">
+              <li class="breadcrumb-item "><a href="/" class="text-reset text-decoration-none">Галерея</a></li>
+              <li class="breadcrumb-item active" aria-current="page">Профіль</li>
+            </ol>
+        </nav>
+        <h2 class="mt-4">Профіль користувача</h2>
+        <div class="profile-container">
+            <form>
+                <div class="profile-row mt-4" style="height: 72px;">
+                    <div>
+                        <h5 onclick="toggleInput('name')">Ім'я</h5>
+                        <p id="name"><%= user.username %></p>
+                        <input type="text" name="name" id="name-input" class="form-control" value="<%= user.name %>" style="display: none;" onblur="hideInput('name')">
+                    </div>
+                    <div>
+                        <h5 onclick="toggleInput('surname')">Фамілія</h5>
+                        <p id="surname"><%= user.surname %></p>
+                        <input type="text" name="surname" id="surname-input" class="form-control" value="<%= user.surname %>" style="display: none;" onblur="hideInput('surname')">
+                    </div>
+                </div>
+                <div class="profile-row mt-5">
+                    <div>
+                        <h5 onclick="toggleInput('email')">Електрона пошта</h5>
+                        <p id="email"><%= user.email %></p>
+                        <input type="email" name="email" id="email-input" class="form-control" value="<%= user.email %>" style="display: none;" onblur="hideInput('email')">
+                        <p id="email-feedback" class="text-danger"></p>
+                    </div>
+                    <div>
+                        <h5 onclick="toggleInput('phone')">Номер телефону</h5>
+                        <p id="phone"><%= user.phone %></p>
+                        <input type="text" name="phone" id="phone-input" class="form-control" value="<%= user.phone %>" style="display: none;" onblur="hideInput('phone')">
+                        <p id="phone-feedback" class="text-danger"></p>
+                    </div>
+                </div>
+                <div class="profile-row mt-5">
+                    <div>
+                        <h5 onclick="toggleInput('age')">Дата народження</h5>
+                        <p id="age"><%= user.birth_date %></p>
+                        <input type="date" name="age" id="age-input" class="form-control" value="<%= user.birth_date %>" style="display: none;" onblur="hideInput('age')">
+                    </div>
+                    <div>
+                        <h5>Дата реєстрації</h5>
+                        <p id="reg-date"><%= user.registration_date %></p>
+                    </div>
+                </div>
+                <button type="submit" id="confirm-button" class="btn btn-primary mt-4">Зберегти зміни</button>
+                <button type="button" id="delete-profile-button" class="btn btn-link  mt-4" data-bs-toggle="modal" data-bs-target="#deleteProfileModal">Видалити профіль</button>
+                <p id="general-feedback" class="text-danger"></p>
+            </form>
+        </div>
+        <h2 class="mt-5">Картини</h2>
+        <h5 class="col-12 col-md-4 mt-3">Кількість доданих вами картин: <%= total_count.total_count ? total_count.total_count : 0 %></h5>
+        <div class="paintings-container">
+            <form action="/profile/add-painting" method="">
+                <button type="submit" class="btn btn-dark w-25 fs-6 mt-4 align-self-end">Додати картину</button>
+            </form>
+            <% paintings.forEach((painting)=> { %>
+                <div class="col-12 mt-4 mb-5">
+                    <div class="row">
+                        <div class="col-10 col-md-3 d-flex justify-content-center text">
+                            <a href="/picture/<%= painting.painting_id %>" style="text-decoration: none; color: black;">
+                                <img src="<%= painting.img_url %>" class="img-fluid" style="height: 250px; width: 250px;" alt="<%= painting.title %>">
+                            </a>
+                        </div>
+                        <div class="col-6 col-md-6">
+                            <div class="card h-100">
+                                <div class="card-body d-flex flex-column">
+                                    <h5 class="card-title">
+                                        <%= painting.title %>
+                                    </h5>
+                                    <p class="card-text <%= painting.availability === 'available' ? 'available' : 'sold' %>">
+                                        <%= painting.availability === 'available' ? 'Пропонується до продажу' : 'Продано' %>
+                                    </p>
+                                    <p class="card-text"><strong>Ціна: </strong>
+                                        <%= painting.price %> $
+                                    </p>
+                                    <div class="d-flex gap-2">
+                                        <form action="/profile/edit/<%= painting.painting_id %>" method="get">
+                                            <button type="submit" class="btn btn-dark fs-6">Редагувати</button>
+                                        </form>
+                                        <form>
+                                            <button type="button" class="btn btn-dark fs-6" data-bs-toggle="modal" data-bs-target="#confirmationModal"  onclick="setItemId('<%= painting.painting_id %>')">Видалити</button>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            <% }); %>
+        </div>
+        <div class="modal fade" id="confirmationModal" tabindex="-1" aria-labelledby="confirmationModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="confirmationModalLabel">Підтвердження дії</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        Ви впевнені, що хочете видалити цей предмет?
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Скасувати</button>
+                        <button type="button" class="btn btn-danger" id="confirmDeleteButton">Видалити</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+        <div class="modal fade" id="deleteProfileModal" tabindex="-1" aria-labelledby="deleteProfileModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="deleteProfileModalLabel">Видалення профілю</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <form id="delete-profile-form">
+                            <div class="mb-3">
+                                <label for="first-password" class="form-label">Введіть пароль</label>
+                                <input type="password" class="form-control" id="first-password" name="first-password" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="second-password" class="form-label">Повторіть пароль</label>
+                                <input type="password" class="form-control" id="second-password" name="second-password" required>
+                            </div>
+                        </form>
+                        <p id="delete-feedback" class="text-danger"></p>
+                        <div class="alert alert-danger" role="alert" id="alert-container" style="display:none; ">
+                    </div>
+                    
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Скасувати</button>
+                        <button type="button" id="deleteProfileButton" form="delete-profile-form" class="btn btn-danger">Видалити профіль</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        
+       
+        <script>
+
+
+            let currentItemId = null;
+
+            function setItemId(itemId) {
+                currentItemId = itemId;
+            }
+
+            document.getElementById("confirmDeleteButton").addEventListener("click", function () {
+                if (currentItemId) {
+                    makeDeleteRequest(`/profile/delete/${currentItemId}`, 'DELETE');
+                }
+            });
+
+            function formatDate(dateString) {
+                const date = new Date(dateString);
+                const day = ("0" + date.getDate()).slice(-2);
+                const month = ("0" + (date.getMonth() + 1)).slice(-2); 
+                const year = date.getFullYear();
+                return `${year}-${month}-${day}`; 
+            }
+
+            window.onload = function () {
+                const birthDate = document.getElementById('age');
+                const birthDateValue = new Date(birthDate.textContent);
+    
+                if (isNaN(birthDateValue)) {
+                    birthDate.textContent = '';  
+                } else {
+                    birthDate.textContent = formatDate(birthDate.textContent);  
+                }
+                const regDate = document.getElementById('reg-date');
+                regDate.textContent = formatDate(regDate.textContent);
+            }
+
+            function toggleInput(field) {
+                const pElement = document.getElementById(field);
+                const inputElement = document.getElementById(field + '-input');
+
+                if (inputElement.style.display === "none") {
+                    pElement.style.display = "none";
+                    inputElement.style.display = "block";
+                    inputElement.focus();
+                } else {
+                    pElement.style.display = "block";
+                    inputElement.style.display = "none";
+                    pElement.textContent = inputElement.value;
+                }
+            }
+
+            function hideInput(field) {
+                const pElement = document.getElementById(field);
+                const inputElement = document.getElementById(field + '-input');
+
+                pElement.textContent = inputElement.value;
+            
+                pElement.style.display = "block";
+                inputElement.style.display = "none";
+            }
+
+            document.getElementById("deleteProfileButton").addEventListener("click", function (event) {
+                event.preventDefault(); 
+
+                const password = document.getElementById('first-password').value;
+                const confirmPassword = document.getElementById('second-password').value;
+
+                clearFeedback();
+                const alertContainer = document.getElementById('alert-container');
+                alertContainer.style.display = 'none'; 
+
+
+                if (password !== confirmPassword) {
+                    showFeedback("Паролі не збігаються!", "delete")
+                    return;
+                }
+
+                if (!password) {
+                    showFeedback("Паролі не збігаються!", "delete")
+                    return;
+                }
+
+                deleteProfileRequest(`/delete-profile/${"<%= user.user_id %>"}`, 'DELETE', password);
+            });
+
+
+            document.getElementById("confirm-button").addEventListener("click", function (event) {
+                event.preventDefault(); 
+    
+                const name = document.getElementById('name-input').value;
+                const surname = document.getElementById('surname-input').value;
+                const email = document.getElementById('email-input').value;
+                let phone = document.getElementById('phone-input').value;
+                let age = document.getElementById('age-input').value;
+
+                if (age === '') {
+                    age = document.getElementById('age').textContent.trim();  
+                } 
+
+                if (age === '') {
+                    age = null;
+                }
+
+                const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                const phoneRegex = /^\+?[0-9]{1,4}[-\s]?\(?\d{1,4}\)?[-\s]?\d{1,4}[-\s]?\d{1,4}[-\s]?\d{1,4}$/;
+
+                clearFeedback();
+                let hasError = false;
+
+                if (!emailRegex.test(email)) {
+                    showFeedback("Введіть коректну електронну адресу!", "email");
+                    hasError = true;
+                }
+
+                if (phone !== "") {
+                    if (!phoneRegex.test(phone)) {
+                        showFeedback("Введіть коректний номер телефону!", "phone");
+                        hasError = true;
+                    }
+                }
+                
+                if (!hasError) {
+                    makeRequest('/update-profile', 'PUT', name, surname, email, phone, age);
+                }
+            });
+
+
+            function makeRequest(path, method, ...data) {
+                let requestBody = {
+                    name: data[0],
+                    surname: data[1],
+                    email: data[2],
+                    phone: data[3],
+                    age: data[4],
+                };
+
+                fetch(path, {
+                    method: method,
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(requestBody)
+                })
+                    .then((response) => {
+                        if (!response.ok) {
+                            throw new Error(`HTTP error! status: ${response.status}`);
+                        }
+                        return response.json();
+                    })
+                    .then((result) => {
+                        if (result.success === false) {
+                            showFeedback(result.message, "general"); 
+                        } else {
+                            window.location.href = result.redirect;
+                        } 
+                    })
+                    .catch((err) => {
+                        console.error('Error:', err);
+                    });
+            }
+
+            function deleteProfileRequest(path, method, ...data) {
+                let requestBody = {
+                    password: data[0]
+                };
+
+                fetch(path, {
+                    method: method,
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(requestBody)
+                })
+                    .then((response) => {
+                        if (!response.ok) {
+                            throw new Error(`HTTP error! status: ${response.status}`);
+                        }
+                        return response.json();
+                    })
+                    .then((result) => {
+                        if (result.success === false) {
+                            showAlert(result.message);
+                        } else {
+                            window.location.href = result.redirect;
+                        } 
+                    })
+                    .catch((err) => {
+                        console.error('Error:', err);
+                    });
+            }
+
+            function makeDeleteRequest(path, method) {
+                fetch(path, {
+                    method: method,
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: null
+                })
+                    .then((response) => {
+                        if (!response.ok) {
+                            throw new Error(`HTTP error! status: ${response.status}`);
+                        }
+                        return response.json();
+                    })
+                    .then((result) => {
+                        if (result.success === false) {
+                            showFeedback(result.message, "general"); 
+                        } else {
+                            window.location.href = result.redirect;
+                        } 
+                    })
+                    .catch((err) => {
+                        console.error('Error:', err);
+                    });
+            }
+
+            function showFeedback(message, field) {
+                const feedbackElement = document.getElementById(`${field}-feedback`);
+                feedbackElement.textContent = message;
+            }
+
+            function clearFeedback() {
+                const feedbackElements = document.querySelectorAll('.text-danger');
+                feedbackElements.forEach(feedback => feedback.textContent = '');
+            }
+
+            function showAlert(message) {
+                const alertContainer = document.getElementById('alert-container');
+                alertContainer.textContent = message;
+                alertContainer.style.display = 'block'; 
+            }
+        
+        </script> 
+</body>
+
+</html>

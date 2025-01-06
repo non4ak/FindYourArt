@@ -1,0 +1,37 @@
+.card {
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+#total-slider {
+    width: 90%;
+}
+
+#total-slider .noUi-target {
+    background-color: #f0f0f0; 
+    height: 5px; 
+}
+
+#total-slider .noUi-connect {
+    background-color: black; 
+    height: 5px; 
+}
+
+#total-slider .noUi-base {
+    height: 5px;
+}
+
+#total-slider .noUi-handle::after,
+#total-slider .noUi-handle::before {
+    display: none;
+}
+
+#total-slider .noUi-handle {
+    width: 20px; 
+    height: 20px; 
+    background-color: #ffffff; 
+    border: 1px solid #000; 
+    border-radius: 50%;
+    cursor: grab; 
+    transition: transform 0.2s ease; 
+}
+

@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FindYourArt</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>    
+    <link rel="stylesheet" href="/css/purchase.css">
+</head>
+
+<body>
+    <nav class="navbar navbar-expand-xl navbar-dark bg-dark py-4">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="/">FindYourArt</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+                ariacontrols="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="/cart">Кошик</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/profile">Профіль</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/logout">Вийти</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+    <div class="container mt-3">
+        <nav style="--bs-breadcrumb-divider: '>';" aria-label="breadcrumb">
+            <ol class="breadcrumb fs-5">
+                <li class="breadcrumb-item "><a href="/" class="text-reset text-decoration-none">Галерея</a></li>
+                <li class="breadcrumb-item "><a href="/cart" class="text-reset text-decoration-none">Кошик</a></li>
+                <li class="breadcrumb-item active" aria-current="page">Замовлення</li>
+
+            </ol>
+        </nav>
+        <div class="row">
+            <div class="col-12 col-md-6 container-fluid">
+                <h2 class="mt-4">Оформлення замовлення</h2>
+    
+                <p class="h6 text-start">Ім'я</p>
+                <div class="input-group mb-3 w-75">
+                    <input type="text" class="form-control" placeholder="Введіть ім'я" aria-describedby="basic-addon1" name="name" value="<%= user.name %>" required>
+                </div>
+                <p id="name-feedback" class="text-danger"></p>
+                <p class="h6 text-start">Прізвище</p>
+                <div class="input-group mb-3 w-75">
+                    <input type="text" class="form-control" placeholder="Введіть прізвище" aria-describedby="basic-addon1" name="surname" value="<%= user.surname %>" required>
+                </div>
+                <p id="surname-feedback" class="text-danger"></p>
+                <p class="h6 text-start">Номер телефону</p>
+                <div class="input-group mb-3 w-75">
+                    <input type="text" class="form-control" placeholder="" aria-describedby="basic-addon1" name="phone" value="<%= user.phone %>" required>
+                </div>
+                <p id="phone-feedback" class="text-danger"></p>
+                <p class="h6 text-start">Назва організації</p>
+                <div class="input-group mb-3 w-75">
+                    <input type="text" class="form-control" placeholder="Необов'язково" aria-describedby="basic-addon1"
+                        name="organization-name">
+                </div>
+                
+                <p class="h5 text-start mt-3">Спосіб доставки</p>
+                <div class="mb-3 w-75">
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" name="delivery-method" value="пошта"
+                            checked>
+                        <label class="form-check-label">
+                            Доставка на поштове відділення
+                        </label>
+                    </div>
+
+                    <div class="form-check mb-3">
+                        <input class="form-check-input" type="radio" name="delivery-method" value="кур'єр">
+                        <label class="form-check-label">
+                            Кур'єр
+                        </label>
+                    </div>
+                </div>
+                <div id="delivery-info" class="mb-3">
+                    <p class="h6 text-start">Адреса</p>
+                    <div class="input-group mb-3 w-75">
+                        <input type="text" class="form-control" placeholder="Введіть адресу" aria-describedby="basic-addon1"
+                            name="delivery-address" required>
+                    </div>
+                    <p id="address-feedback" class="text-danger"></p>
+                    <p class="h6 text-start">Поштовий індекс</p>
+                    <div class="input-group mb-3 w-75">
+                        <input type="text" class="form-control" placeholder="" aria-describedby="basic-addon1" name="post-code"
+                            required>
+                    </div>
+                    <p id="post-feedback" class="text-danger"></p>
+                    <p class="h6 text-start">Місто</p>
+                    <div class="input-group mb-3 w-75">
+                        <input type="text" class="form-control" placeholder="" aria-describedby="basic-addon1" name="city" required>
+                    </div>
+                    <p id="city-feedback" class="text-danger"></p>
+                    <p class="h6 text-start">Країна</p>
+                    <div class="input-group mb-3 w-75">
+                        <input type="text" class="form-control" placeholder="" aria-describedby="basic-addon1" name="country" required>
+                    </div>
+                    <p id="country-feedback" class="text-danger"></p>
+                </div>
+                <p class="h5 text-start mt-3">Спосіб оплати</p>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="payment-type" value="Наложений платіж"
+                        checked>
+                    <label class="form-check-label">
+                        Оплата при отриманні
+                    </label>
+                </div>
+                <div class="form-check mb-3">
+                    <input class="form-check-input" type="radio" name="payment-type" value="Картою">
+                    <label class="form-check-label">
+                        Оплатити зараз
+                    </label>
+                </div>
+                <h5>Фінальна вартість: <%= total_sum.total_sum ? total_sum.total_sum : 0 %>$</h5>
+                <form action="" method="">  
+                    <button type="submit" id="confirm-button" class="btn btn-success w-25 fs-6 mt-3 mb-5">Підтвердити</button>
+                </form>
+            </div>
+            <div class="container-fluid col-12 col-md-3">
+                <h4 class="mt-4">Мій кошик</h4>
+                <% paintings.forEach((painting)=> { %>
+                    <div class="col-12 mt-1">
+                        <div class="row">
+                            <div class  ="col-12 col-md-5 d-flex">
+                                <a href="/picture/<%= painting.painting_id %>" style="text-decoration: none; color: black;">
+                                    <img src="<%= painting.img_url %>" class="img-fluid" style="width: 125px; height: 125px;"  alt="<%= painting.title %>">
+                                </a>
+                            </div>
+            
+                            <div class="col-12 col-md-7">
+                                <div class="card h-100">
+                                    <div class="card-body d-flex flex-column">
+                                        <h6 class="card-title">
+                                            <%= painting.title %>
+                                        </h6>
+                                        <p class="card-text"><strong>Ціна: </strong>
+                                            <%= painting.price %> $
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                <% }); %>
+            </div>
+        </div>
+    </div>
+    <script>
+        document.getElementById("confirm-button").addEventListener("click", function (event) {
+            event.preventDefault();
+
+            const name = document.querySelector('input[name="name"]').value;
+            const surname = document.querySelector('input[name="surname"]').value;
+            const phone = document.querySelector('input[name="phone"]').value;
+            const deliveryAddress = document.querySelector('input[name="delivery-address"]').value;
+            const city = document.querySelector('input[name="city"]').value;
+            const country = document.querySelector('input[name="country"]').value;
+            const postCode = document.querySelector('input[name="post-code"]').value;
+            const organizationName = document.querySelector('input[name="organization-name"]').value;
+            const deliveryMethod = document.querySelector('input[name="delivery-method"]:checked').value;
+            const paymentType = document.querySelector('input[name="payment-type"]:checked').value;
+
+
+            clearFeedback();
+            let formValid = true;
+
+            if (!name) {
+                showFeedback("Обов'язкове поле!", "name");
+                formValid = false;
+            }
+            if (!surname) {
+                showFeedback("Обов'язкове поле!", "surname");
+                formValid = false;
+            }
+            if (!phone) {
+                showFeedback("Обов'язкове поле!", "phone");
+                formValid = false;
+            }
+            if (!deliveryAddress) {
+                showFeedback("Обов'язкове поле!", "address");
+                formValid = false;
+            }
+            if (!city) {
+                showFeedback("Обов'язкове поле!", "city");
+                formValid = false;
+            }
+            if (!country) {
+                showFeedback("Обов'язкове поле!", "country");
+                formValid = false;
+            }
+            if (!postCode) {
+                showFeedback("Обов'язкове поле!", "post");
+                formValid = false;
+            }
+
+            if (formValid) {
+                makeRequest('/cart/purchase', 'POST', name, surname, phone, deliveryAddress, city, country, postCode, organizationName, deliveryMethod, paymentType);
+            }
+        });
+
+        function makeRequest(path, method, ...data) {
+                let requestBody = {
+                    name: data[0],
+                    surname: data[1],
+                    phone: data[2],
+                    deliveryAddress: data[3],
+                    city: data[4],
+                    country: data[5],
+                    postCode: data[6],
+                    organizationName: data[7],
+                    deliveryMethod: data[8],
+                    paymentType: data[9]
+                };
+
+                fetch(path, {
+                    method: method,
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(requestBody)
+                })
+                    .then((response) => {
+                        if (!response.ok) {
+                            throw new Error(`HTTP error! status: ${response.status}`);
+                        }
+                        return response.json();
+                    })
+                    .then((result) => {
+                        window.location.href = result.redirect;
+                    })
+                    .catch((err) => {
+                        console.error('Error:', err);
+                    });
+            }
+
+        function showFeedback(message, field) {
+            const feedbackElement = document.getElementById(`${field}-feedback`);
+            feedbackElement.textContent = message;
+        }
+
+        function clearFeedback() {
+            const feedbackElements = document.querySelectorAll('.text-danger');
+            feedbackElements.forEach(feedback => feedback.textContent = '');
+        }
+
+    </script>
+</body>
+
+</html>

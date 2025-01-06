@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FindYourArt</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>    
+    <link rel="stylesheet" href="css/gallery.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/noUiSlider/15.7.0/nouislider.min.css" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/noUiSlider/15.7.0/nouislider.min.js"></script>
+</head>
+
+<body>
+    <nav class="navbar navbar-expand-xl navbar-dark bg-dark py-4">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="#">FindYourArt</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+                ariacontrols="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <% if (isLoggedIn) { %>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/cart">Кошик</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/profile">Профіль</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/logout">Вийти</a>
+                        </li>
+                    <% } else { %>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/login">Кошик</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/login">Вхід</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/register">Реєстрація</a>
+                        </li>
+                    <% } %>
+                </ul>
+            </div>
+        </div>
+    </nav>
+    <div class="container">
+        <div class="input-group mb-3 mt-5">
+            <input type="text" class="form-control" id="searchInput" aria-describedby="inputGroup-sizing-default" placeholder="Пошук">
+            <button class="btn btn-outline-secondary w-10 custom-hover" type="button" id="button-addon2" style="width: 15%;" type = "submit">Пошук</button>
+        </div>    
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-2">
+                    <h3 class="mt-4">Жанр</h3>
+                    <form method="GET" action="/">
+                        <% genres.forEach(function(genre, index) { %>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" name="category" value="<%= genre.category_name %>" id="genreOption<%= index %>"
+                                <%= category === genre.category_name ? 'checked' : '' %> />
+                                <label class="form-check-label" for="option<%= index %>">
+                                    <%= genre.category_name %>
+                                    <span class="category-count">
+                                        (<%= categoryCounts.find(c => c.category_name === genre.category_name)?.painting_count || 0 %>)
+                                    </span>
+                                </label>
+                            </div>
+                        <% }); %>
+                    </form>
+
+                    <h3 class="mt-4">Стиль</h3>
+                    <form method="GET" action="/">
+                        <% styles.forEach(function(style, index) { %>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" name="style" value="<%= style.category_name %>" id="styleOption<%= index %>" 
+                                <%= categoryStyle === style.category_name ? 'checked' : '' %> />
+                                <label class="form-check-label" for="option<%= index %>">
+                                    <%= style.category_name %>
+                                    <span class="category-count">
+                                        (<%= categoryCounts.find(c => c.category_name === style.category_name)?.painting_count || 0 %>)
+                                    </span>
+                                </label>
+                            </div>
+                        <% }); %>
+                    </form>
+                    <div class="text-align-center">
+                        <div id="price-slider" class="mt-4 mb-2 h-25"></div>
+                        <div class="d-flex align-items-center gap-2">
+                            <div class="d-flex flex-column w-50">
+                                <label for="priceFrom" class="form-label">Від</label>
+                                <input type="number" class="form-control " id="input-0" placeholder="Мін. ціна">
+                            </div>
+                            <div class="d-flex flex-column w-50">
+                                <label for="priceTo" class="form-label">До</label>
+                                <input type="number" class="form-control" id="input-1" placeholder="Макс. ціна">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+        
+                <div class="col-10 container-fluid">
+                    <div class="row d-flex align-items-center">
+                        <h2 class="mt-4 col-12 col-md-6 mb-3">Список картин</h2>
+                        <form method="GET" action="/" class="col-12 col-md-6 mt-4 mt-md-0 d-flex justify-content-end">
+                            <select name="sort" class="form-select w-auto" id="sort-select">
+                                <option value="none" selected>Без сортування</option>
+                                <option value="asc" <%= sort === 'asc' ? 'selected' : '' %>>Ціна: за зростанням</option>
+                                <option value="desc" <%= sort === 'desc' ? 'selected' : '' %>>Ціна: за спаданням</option>
+                            </select>
+                        </form>
+                    </div>
+                    
+                    <div class="row">
+                        <% if (message) { %>
+                            <div class="col-12">
+                                <div class="alert alert-warning" role="alert">
+                                    <%= message %>
+                                </div>
+                            </div>
+                        <% } %>
+
+                        <% paintings.forEach(function(painting) { %>
+                        <div class="col-12 col-md-4 mb-4">
+                            <a href=" /picture/<%=painting.painting_id %>." style="text-decoration: none; color: black;">
+                                <div class="card">
+                                    <img src="<%=painting.img_url %>" class="card-img-top1" alt="<%= painting.title %>">
+                                    <div class="card-body">
+                                        <h5 class="card-title"><%= painting.title %></h5>
+                                        <p><%= painting.short_description %>...</p>
+                                        <p>Автор: <%= painting.first_name %> <%= painting.last_name %></p>
+                                        <p><strong>Ціна: </strong><%= painting.price %>$</p>
+                                    </div>
+                                </div>  
+                            </a>
+                        </div>
+                        <% }); %>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>        
+    <script>
+        document.getElementById('searchInput').addEventListener('keypress', function(event) {
+            if (event.key === 'Enter') {
+                event.preventDefault(); 
+                document.getElementById('button-addon2').click(); 
+            }
+        });
+
+
+        const priceSlider = document.getElementById("price-slider");
+        const input0 = document.getElementById("input-0");
+        const input1 = document.getElementById("input-1");
+        const inputs = [input0, input1];
+
+        noUiSlider.create(priceSlider, {
+            start: [0, 15000],
+            connect: true,
+            step: 100,
+            range: {
+                min: 0,
+                max: 15000
+            }   
+        });
+
+        priceSlider.noUiSlider.on("update", function (values, handle) {
+            inputs[handle].value = Math.round(values[handle]);
+        });
+
+        const setPriceSlider = (i, value) => {
+            let arr = [null, null];
+            arr[i] = value;
+
+            priceSlider.noUiSlider.set(arr);
+        }
+
+        inputs.forEach((el, index) => {
+            el.addEventListener('change', (e) => {
+                setPriceSlider(index, e.currentTarget.value);
+            })
+        })
+
+
+        document.querySelectorAll('input[type="checkbox"][name="category"]').forEach(checkbox => {
+            checkbox.addEventListener('click', function () {
+                document.querySelectorAll('input[type="checkbox"][name="category"]').forEach(cb => {
+                    if (cb !== this) cb.checked = false; 
+                });
+            });
+        });
+
+        document.querySelectorAll('input[type="checkbox"][name="style"]').forEach(checkbox => {
+            checkbox.addEventListener('click', function () {
+                document.querySelectorAll('input[type="checkbox"][name="style"]').forEach(cb => {
+                    if (cb !== this) cb.checked = false; 
+                });
+            });
+        });
+
+        document.getElementById("button-addon2").addEventListener("click", function () {
+                const sortValue = document.getElementById("sort-select").value; 
+                const query = document.getElementById("searchInput").value;
+                const selectedCategory = document.querySelector('input[name="category"]:checked');
+                const selectedStyle = document.querySelector('input[name="style"]:checked');
+                const categoryValue = selectedCategory ? selectedCategory.value : null;
+                const styleValue = selectedStyle ? selectedStyle.value : null;
+
+                const prices = priceSlider.noUiSlider.get(); 
+                const minPrice = Math.round(prices[0]);
+                const maxPrice = (Math.round(prices[1]) === 15000) ? "Infinity" : Math.round(prices[1]);
+
+                if (query || categoryValue || styleValue) {
+
+                    let url = `/?query=${encodeURIComponent(query)}`;
+                    if (categoryValue) {
+                        url += `&category=${encodeURIComponent(categoryValue)}`;
+                    }
+                    if (styleValue) {
+                        url += `&style=${encodeURIComponent(styleValue)}`;
+                    }
+                    url += `&minPrice=${minPrice}&maxPrice=${maxPrice}`;
+                    url += `&sort=${sortValue}`;
+                    window.location.href = url;
+                } else {
+                    let url = `/?query=${encodeURIComponent(query)}`;
+                    url += `&minPrice=${minPrice}&maxPrice=${maxPrice}`;
+                    url += `&sort=${sortValue}`;
+                    window.location.href = url;
+                }
+            });
+
+        document.getElementById("sort-select").addEventListener("change", function () {
+                const sortValue = this.value; 
+                const query = document.getElementById("searchInput").value;
+                const selectedCategory = document.querySelector('input[name="category"]:checked');
+                const selectedStyle = document.querySelector('input[name="style"]:checked');
+                const categoryValue = selectedCategory ? selectedCategory.value : null;
+                const styleValue = selectedStyle ? selectedStyle.value : null;
+
+                const prices = priceSlider.noUiSlider.get();
+                const minPrice = Math.round(prices[0]);
+                const maxPrice = (Math.round(prices[1]) === 15000) ? "Infinity" : Math.round(prices[1]);
+
+
+                if (query || categoryValue || styleValue) {
+                    let url = `/?query=${encodeURIComponent(query)}`;
+                    if (categoryValue) {
+                        url += `&category=${encodeURIComponent(categoryValue)}`;
+                    }
+                    if (styleValue) {
+                        url += `&style=${encodeURIComponent(styleValue)}`;
+                    }
+
+                    url += `&minPrice=${minPrice}&maxPrice=${maxPrice}`;
+                    url += `&sort=${sortValue}`;
+                    window.location.href = url;
+                } else {
+                    let url = `/?query=${encodeURIComponent(query)}`;
+                    url += `&minPrice=${minPrice}&maxPrice=${maxPrice}`;
+                    url += `&sort=${sortValue}`;
+                    window.location.href = url;
+                }
+            });
+    </script>
+</body>
+
+</html>

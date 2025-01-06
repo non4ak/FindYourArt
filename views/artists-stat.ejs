@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FindYourArt</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>    
+    <link rel="stylesheet" href="css/picture.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&icon_names=print" />
+</head>
+
+<body>
+    <nav class="navbar navbar-expand-xl navbar-dark bg-dark py-4">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="/">FindYourArt</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+                ariacontrols="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <% if (user.role === 'admin') { %>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/edit-orders">Замовлення</a>
+                        </li> 
+                        <li class="nav-item">
+                            <a class="nav-link" href="">Категорії</a>
+                        </li> 
+                    <% } %>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/cart">Кошик</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/profile">Профіль</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/logout">Вийти</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+    
+    <div class="container mt-3">
+        <nav style="--bs-breadcrumb-divider: '>';" aria-label="breadcrumb">
+            <ol class="breadcrumb fs-5">
+              <li class="breadcrumb-item"><a href="/" class="text-reset text-decoration-none">Галерея</a></li>
+              <li class="breadcrumb-item"><a href="/profile" class="text-reset text-decoration-none">Профіль</a></li>
+              <li class="breadcrumb-item active" aria-current="page">Художники</li>
+            </ol>
+        </nav>
+        <h2 class="mt-4">Художники</h2>
+        <h4 class="mt-1">Усього художників: <%=artistsCount.artists_count %></h4>
+        <div class="row">
+            <% artists.forEach(function(artist) { %>
+                <div class="col-md-4 col-sm-6">
+                    <div class="artist-card mb-4 p-4 border rounded shadow-sm bg-light">
+                        <div class="mb-3">
+                            <div class="mb-3 d-flex justify-content-between align-items-center">
+                                <h4 class="author-name text-primary mb-0"><%= artist.first_name %> <%= artist.last_name %></h4>
+                                <span class="material-symbols-outlined" style="cursor: pointer; user-select: none;" onclick="window.location.href=`/artists-stat/print/<%= artist.artist_id %>`">print</span>
+                            </div>
+                            <p class="text-muted mb-1"><%= artist.bio %></p>
+                            <p class="text-muted mb-1">Дата народження: <span class="birth-date" id="birth-date"><%= artist.birth_date %></span></p>
+                            <p class="text-muted mb-1">Країна: <%= artist.country %></p>
+                        </div>
+                        <ul class="author-stats list-unstyled mt-4">
+                            <li class="d-flex justify-content-between">
+                                <strong>Кількість картин:</strong> <span><%= artist.paintings_count %></span>
+                            </li>
+                            <li class="d-flex justify-content-between">
+                                <strong>Загальна ціна картин:</strong> <span><%= artist.total_price %>$</span>
+                            </li>
+                            <li class="d-flex justify-content-between">
+                                <strong>Кількість проданих картин:</strong> <span><%= artist.sold_paintings_count %></span>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            <% }); %>
+        </div>
+        
+        
+        
+        
+    </div>    
+    <script>
+        function formatDate(dateString) {
+                const date = new Date(dateString);
+                const day = ("0" + date.getDate()).slice(-2);
+                const month = ("0" + (date.getMonth() + 1)).slice(-2); 
+                const year = date.getFullYear();
+                return `${year}-${month}-${day}`; 
+            }
+
+            window.onload = function () {
+                const birthDates = document.querySelectorAll('.birth-date');
+    
+                birthDates.forEach(function(birthDate) {
+                    if (birthDate.textContent) {
+                        birthDate.textContent = formatDate(birthDate.textContent);  
+                    }
+                });
+            };
+  
+    </script>    
+</body>
+
+</html>

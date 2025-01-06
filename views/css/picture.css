@@ -1,0 +1,21 @@
+.card-img-top {
+    width: 50%; 
+    height: auto;
+    object-fit: contain;
+}
+
+.custom-font {
+    font-family: 'Arial', sans-serif; 
+}
+
+.custom-font2 {
+    font-family: Georgia, 'Times New Roman', Times, serif;
+}
+
+.available {
+    color: green; 
+}
+
+.sold {
+    color: red; 
+}

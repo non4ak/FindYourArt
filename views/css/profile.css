@@ -1,0 +1,28 @@
+.profile-container {
+    display: flex;
+    flex-direction: column;
+    gap: 20px; 
+}
+
+.profile-row {
+    display: flex;
+    gap: 20px; 
+}
+
+.profile-row > div {
+    flex: 1;
+}
+
+
+body .card {
+    border: 0;
+    border-right: 1px solid #ddd;
+}
+
+.available {
+    color: green; 
+}
+
+.sold {
+    color: red; 
+}

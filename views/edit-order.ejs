@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FindYourArt</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>    
+    <link rel="stylesheet" href="/css/purchase.css">
+</head>
+
+<body>
+    <nav class="navbar navbar-expand-xl navbar-dark bg-dark py-4">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="/">FindYourArt</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+                ariacontrols="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <% if (user.role === 'admin') { %>
+                        <li class="nav-item">
+                            <a class="nav-link" href="">Замовлення</a>
+                        </li> 
+                        <li class="nav-item">
+                            <a class="nav-link" href="/edit-tables">Категорії</a>
+                        </li> 
+                        <li class="nav-item">
+                            <a class="nav-link" href="/artists-stat">Художники</a>
+                        </li> 
+                    <% } %>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/cart">Кошик</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/profile">Профіль</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/logout">Вийти</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+    <div class="container mt-3">
+        <nav style="--bs-breadcrumb-divider: '>';" aria-label="breadcrumb">
+            <ol class="breadcrumb fs-5">
+                <li class="breadcrumb-item"><a href="/" class="text-reset text-decoration-none">Галерея</a></li>
+                <li class="breadcrumb-item"><a href="/profile" class="text-reset text-decoration-none">Профіль</a></li>
+                <li class="breadcrumb-item"><a href="/edit-orders" class="text-reset text-decoration-none">Замовлення</a></li>
+                <li class="breadcrumb-item active" aria-current="page">Редагування</li>
+              </ol>
+        </nav>
+        <div class="row">
+            <div class="col-12">
+                <h2 class="mt-1 text-primary mb-4">Замовлення <%=order.purchase_id%></h2>                              
+                <div class="row mb-3">
+                    <div class="col-12 col-md-6">
+                        <p class="h6 text-start">Дата замовлення</p>
+                        <div class="input-group mb-3 w-100">
+                            <input type="date" class="form-control" id="order-date" placeholder="Виберіть дату" aria-describedby="basic-addon1" name="order-date">
+                        </div>
+                        <p id="order-date-feedback" class="text-danger"></p>
+                    </div>
+                    <div class="col-12 col-md-6">
+                        <p class="h6 text-start">Вартість</p>
+                        <div class="input-group mb-3 w-100">
+                            <input type="number" class="form-control" aria-describedby="basic-addon1" value="<%=order.total_price %>" name="price" required>
+                        </div>
+                        <p id="price-feedback" class="text-danger"></p>
+                    </div>
+                </div>
+                <div class="row mb-3">
+                    <div class="col-12 col-md-6">
+                        <p class="h6 text-start">Спосіб доставки</p>
+                        <div class="input-group mb-3 w-100">
+                            <select class="form-control" name="delivery-method" required>
+                                <option value="пошта" <%= deliveryMethod === 'пошта' ? 'selected' : '' %>>Поштове відділення</option>
+                                <option value="кур'єр" <%= deliveryMethod === "кур'єр" ? 'selected' : '' %>>Кур'єр</option>
+                            </select>   
+                        </div>
+                        <p id="payment-feedback" class="text-danger"></p>
+                    </div>
+
+                    <div class="col-12 col-md-6">
+                        <p class="h6 text-start">Спосіб оплати</p>
+                        <div class="input-group mb-3 w-100">
+                            <select class="form-control" name="payment-type" required>
+                                <option value="Наложений платіж" <%= paymentType === 'Наложений платіж' ? 'selected' : '' %>>Наложений платіж</option>
+                                <option value="Картою" <%= paymentType === 'Картою' ? 'selected' : '' %>>Картою</option>
+                            </select> 
+                        </div>
+                        <p id="method-feedback" class="text-danger"></p>
+                    </div>   
+                </div>
+                <div class="row mb-3">
+                    <div class="col-12 col-md-6">
+                        <p class="h6 text-start">Адреса доставки</p>
+                        <div class="input-group mb-3 w-100">
+                            <input type="text" class="form-control" aria-describedby="basic-addon1" value="<%=order.delivery_address %>" name="address" required>
+                        </div>
+                        <p id="address-feedback" class="text-danger"></p>
+                    </div>
+
+                    <div class="col-12 col-md-6">
+                        <p class="h6 text-start">Місто</p>
+                        <div class="input-group mb-3 w-100">
+                            <input type="text" class="form-control" aria-describedby="basic-addon1" value="<%=order.city %>" name="city" required>
+                        </div>
+                        <p id="city-feedback" class="text-danger"></p>
+                    </div>   
+                </div>
+                <div class="row mb-3">
+                    <div class="col-12 col-md-6">
+                        <p class="h6 text-start">Країна</p>
+                        <div class="input-group mb-3 w-100">
+                            <input type="text" class="form-control" aria-describedby="basic-addon1" value="<%=order.country %>" name="country" required>
+                        </div>
+                        <p id="country-feedback" class="text-danger"></p>
+                    </div>
+                    <div class="col-12 col-md-6">
+                        <p class="h6 text-start">Поштовий код</p>
+                        <div class="input-group mb-3 w-100">
+                            <input type="number" class="form-control" aria-describedby="basic-addon1" value="<%=order.postal_code %>" name="post" required>
+                        </div>
+                        <p id="post-feedback" class="text-danger"></p>
+                    </div>
+                </div>
+                <div class="row mb-3">
+                    <div class="col-12 col-md-6">
+                        <p class="h6 text-start">Ім'я отримувача</p>
+                        <div class="input-group mb-3 w-100">
+                            <input type="text" class="form-control" aria-describedby="basic-addon1" value="<%=order.recipient_fio %>" name="fio" required>
+                        </div>
+                        <p id="fio-feedback" class="text-danger"></p>
+                    </div>
+                    <div class="col-12 col-md-6">
+                        <p class="h6 text-start">Номер телефону</p>
+                        <div class="input-group mb-3 w-100">
+                            <input type="text" class="form-control" aria-describedby="basic-addon1" value="<%=order.recipient_phone %>" name="phone" required>
+                        </div>
+                        <p id="phone-feedback" class="text-danger"></p>
+                    </div>
+                </div>
+                <div class="row mb-3">
+                    <div class="col-12 col-md-6">
+                        <p class="h6 text-start">Організація</p>
+                        <div class="input-group mb-3 w-100">
+                            <input type="text" class="form-control" aria-describedby="basic-addon1" value="<%=order.organization %>" name="organization" required>
+                        </div>
+                        <p id="organization-feedback" class="text-danger"></p>
+                    </div>
+                    <div class="col-12 col-md-6">
+                        <p class="h6 text-start">Статус</p>
+                        <div class="input-group mb-3 w-100">
+                            <select class="form-control" name="status" required>
+                                <option <%= order.status === 'В обробці' ? 'selected' : '' %>>В обробці</option>
+                                <option <%= order.status === 'Підтверджено' ? 'selected' : '' %>>Підтверджено</option>
+                                <option <%= order.status === 'Відхилено' ? 'selected' : '' %>>Відхилено</option>
+                            </select>   
+                        </div>
+                        <p id="status-feedback" class="text-danger"></p>
+                    </div>
+                </div>
+                <form action="" method="">
+                    <button type="submit" id="confirm-button" class="btn btn-success w-25 fs-6 mt-3 mb-5">Підтвердити</button>
+                </form>
+                <div>
+                    <table class="table table-striped mt-5">
+                        <thead>
+                            <tr>
+                                <th>ID предмету</th>
+                                <th>Кількість</th>
+                                <th>Ціна</th>
+                                <th>ID картини</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <% items.forEach(function(item) { %>
+                                <tr>
+                                    <td><%= item.item_id %></td>
+                                    <td><%= item.items_count %></td>
+                                    <td><%= item.price %></td>
+                                    <td><%= item.painting_id %></td>
+                                    <td><button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#confirmationModal" onclick="setItemId('<%= item.item_id %>')">Видалити</button></td>
+                                </tr>
+                            <% }); %>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="modal fade" id="confirmationModal" tabindex="-1" aria-labelledby="confirmationModalLabel" aria-hidden="true">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="confirmationModalLabel">Підтвердження дії</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                                Ви впевнені, що хочете видалити цей предмет?
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Скасувати</button>
+                                <button type="button" class="btn btn-danger" id="confirmDeleteButton">Видалити</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        let currentItemId = null;
+
+        function setItemId(itemId) {
+            currentItemId = itemId;
+        }
+
+        document.getElementById("confirmDeleteButton").addEventListener("click", function () {
+            if (currentItemId) {
+                makeDeleteRequest(`/edit-orders/edit/<%= order.purchase_id %>/delete/${currentItemId}`, 'DELETE');
+            }
+        });
+
+
+        function formatDate(dateString) {
+                const date = new Date(dateString);
+                const day = ("0" + date.getDate()).slice(-2);
+                const month = ("0" + (date.getMonth() + 1)).slice(-2); 
+                const year = date.getFullYear();
+                return `${year}-${month}-${day}`; 
+            }
+
+            window.onload = function () {
+                const orderDate = document.getElementById('order-date');
+                orderDate.value = formatDate('<%=order.order_date%>');
+            }
+
+        document.getElementById("confirm-button").addEventListener("click", function (event) {
+            event.preventDefault();
+
+            let orderDate = document.querySelector('input[name="order-date"]').value;
+            const price = document.querySelector('input[name="price"]').value;
+            const address = document.querySelector('input[name="address"]').value;
+            const city = document.querySelector('input[name="city"]').value;
+            const country = document.querySelector('input[name="country"]').value;
+            const post = document.querySelector('input[name="post"]').value;
+            const fio = document.querySelector('input[name="fio"]').value;
+            const phone = document.querySelector('input[name="phone"]').value;
+            const organization = document.querySelector('input[name="organization"]').value;
+            const status = document.querySelector('select[name="status"]').value;
+            const paymentType = document.querySelector('select[name="payment-type"]').value;
+            const deliveryMethod = document.querySelector('select[name="delivery-method"]').value;
+
+            if (orderDate) {
+                const formattedDate = new Date(orderDate);
+                orderDate = formattedDate.toISOString().split('T')[0]; 
+            }
+
+            const phoneRegex = /^\+?[0-9]{1,4}[-\s]?\(?\d{1,4}\)?[-\s]?\d{1,4}[-\s]?\d{1,4}[-\s]?\d{1,4}$/;
+
+            if (phone !== "") {
+                if (!phoneRegex.test(phone)) {
+                    showFeedback("Введіть коректний номер телефону!", "phone");
+                    hasError = true;
+                }
+            }
+
+            clearFeedback();
+            let formValid = true;
+
+            if (!orderDate) {
+                showFeedback("Обов'язкове поле!", "order-date");
+                formValid = false;
+            }
+            if (!price) {
+                showFeedback("Обов'язкове поле!", "price");
+                formValid = false;
+            }
+            if (!address) {
+                showFeedback("Обов'язкове поле!", "address");
+                formValid = false;
+            }
+            if (!city) {
+                showFeedback("Обов'язкове поле!", "city");
+                formValid = false;
+            }
+            if (!country) {
+                showFeedback("Обов'язкове поле!", "country");
+                formValid = false;
+            }
+            if (!post) {
+                showFeedback("Обов'язкове поле!", "post");
+                formValid = false;
+            }
+            if (!fio) {
+                showFeedback("Обов'язкове поле!", "fio");
+                formValid = false;
+            }
+
+            if (formValid) {
+                makeRequest(`/edit-orders/edit/${"<%=order.purchase_id%>"}`, 'PUT', price, orderDate, address, city, country, post, phone, fio, organization, status, deliveryMethod, paymentType);
+            }
+
+
+
+        });
+
+        function makeRequest(path, method, ...data) {
+                let requestBody = {
+                    totalPrice: data[0],
+                    orderDate: data[1],
+                    deliveryAddress: data[2],
+                    city: data[3],
+                    country: data[4],
+                    postalCode: data[5],
+                    recipientPhone: data[6],
+                    recipientFio: data[7],
+                    organization: data[8],
+                    status: data[9],
+                    deliveryMethod: data[10],
+                    paymentType: data[11]
+                };
+
+                fetch(path, {
+                    method: method,
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(requestBody)
+                })
+                    .then((response) => {
+                        if (!response.ok) {
+                            throw new Error(`HTTP error! status: ${response.status}`);
+                        }
+                        return response.json();
+                    })
+                    .then((result) => {
+                        if (result.success === false) {
+                            showFeedback(result.message, "title"); 
+                            showFeedback(result.message, "descript"); 
+                            showFeedback(result.message, "link");  
+                        } else if (result.success === true && result.artist === false ) {
+                            showFeedback(result.message, "name"); 
+                            showFeedback(result.message, "surname");
+                        } else {
+                            window.location.href = result.redirect;
+                        }
+                    })
+                    .catch((err) => {
+                        console.error('Error:', err);
+                    });
+            }
+
+        function makeDeleteRequest(path, method) {
+                fetch(path, {
+                    method: method,
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: null
+                })
+                    .then((response) => {
+                        if (!response.ok) {
+                            throw new Error(`HTTP error! status: ${response.status}`);
+                        }
+                        return response.json();
+                    })
+                    .then((result) => {
+                        if (result.success === false) {
+                            showFeedback(result.message, "general"); 
+                        } else {
+                            window.location.href = result.redirect;
+                        } 
+                    })
+                    .catch((err) => {
+                        console.error('Error:', err);
+                    });
+        }
+
+        function showFeedback(message, field) {
+            const feedbackElement = document.getElementById(`${field}-feedback`);
+            feedbackElement.textContent = message;
+        }
+
+        function clearFeedback() {
+            const feedbackElements = document.querySelectorAll('.text-danger');
+            feedbackElements.forEach(feedback => feedback.textContent = '');
+        }
+
+    </script>
+</body>
+
+</html>

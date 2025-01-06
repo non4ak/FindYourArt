@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FindYourArt</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>    
+    <link rel="stylesheet" href="css/picture.css">
+</head>
+
+<body>
+    <nav class="navbar navbar-expand-xl navbar-dark bg-dark py-4">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="/">FindYourArt</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+                ariacontrols="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <% if (isLoggedIn) { %>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/cart">Кошик</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/profile">Профіль</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/logout">Вийти</a>
+                        </li>
+                    <% } else { %>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/login">Кошик</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/login">Вхід</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/register">Реєстрація</a>
+                        </li>
+                    <% } %>
+                </ul>
+            </div>
+        </div>
+    </nav>
+    
+    <div class="container mt-4">
+        <nav style="--bs-breadcrumb-divider: '>';" aria-label="breadcrumb">
+            <ol class="breadcrumb fs-5">
+              <li class="breadcrumb-item "><a href="/" class="text-reset text-decoration-none">Галерея</a></li>
+              <li class="breadcrumb-item active" aria-current="page">Картина</li>
+            </ol>
+        </nav>
+        <div class="row">
+            <div class="col-12 col-md-6 mb-4">
+                <img src="<%= paintings.img_url %>" class="img-fluid mx-auto d-block" alt="<%= paintings.title %>">
+            </div>
+            
+            <div class="col-12 col-md-6">
+                <h1 class="mt-4 ms-5"><%= paintings.title %></h1>
+                <p class="ms-5 fs-6 custom-font2"><%= paintings.material %>, <%= paintings.width %>x<%= paintings.height %>cm</p>
+                <p class="ms-5 fs-5"><%= paintings.price %>$</p>
+                <% if (paintings.availability === 'available') { %>
+                    <form action="/add-to-cart/<%= paintings.painting_id %>" method="post">
+                        <button class="btn btn-dark w-50 custom-hover ms-5 fs-5 custom-font">Додати в кошик</button>
+                    </form>
+                <% } else { %>
+                    <button class="btn btn-dark w-50 custom-hover ms-5 fs-5 custom-font" disabled>Продано</button>
+                <% } %>
+            </div>
+        </div>
+        <div class="ms-4">
+            <p class="fs-5"><%= paintings.descript %></p>
+            <p class="fs-5">Розміри: Ширина <%= paintings.width %>см, Висота <%= paintings.height %> см</p>
+        </div>
+    </div>   
+    <div class="container mt-4">
+        <h2 class="fs-3 mb-2 mt-5">Інформація про автора</h2>
+        <div class="card mb-3 border-0 ms-2">
+            <div class="row g-0">
+                <div class="col-md-8">
+                    <div class="card-body">
+                        <h5 class="card-title fs-4"><%= artist.first_name %> <%= artist.last_name %></h5>
+                        <p class="card-text fs-5 text-muted">Дата народження: <span id="age"><%= artist.birth_date %></span></p>
+                        <p class="card-text fs-5">Біографія: <%= artist.bio %></p>
+                        <p class="card-text fs-5">Країна: <%= artist.country %></p>
+
+                        <p class="card-text"><small class="text-muted">Робіт у галереї: <%= artist.paintings_count %> | Загальна ціна картин: <%= artist.total_price %>$ | Продано робіт: <%= artist.sold_paintings_count %></small></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div> 
+
+    <script>
+        function formatDate(dateString) {
+            const date = new Date(dateString);
+            const day = ("0" + date.getDate()).slice(-2);
+            const month = ("0" + (date.getMonth() + 1)).slice(-2); 
+            const year = date.getFullYear();
+            return `${day}-${month}-${year}`; 
+        }
+
+        window.onload = function () {
+            const birthDate = document.getElementById('age');
+            const birthDateValue = new Date(birthDate.textContent);
+    
+            if (isNaN(birthDateValue)) {
+                birthDate.textContent = '';     
+            } else {
+                birthDate.textContent = formatDate(birthDate.textContent);  
+            }
+        }
+    </script>    
+</body>
+
+</html>
