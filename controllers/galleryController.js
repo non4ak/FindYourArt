@@ -36,8 +36,8 @@ module.exports.getGallery = async(req, res) => {
         let data = [];
         let categoryCondition = '';
         let params = [`%${query}%`, `%${query}%`, `%${query}%`, `%${query}%`];
-        const priceCondition = `AND p.price BETWEEN ? AND ?`; 
-        const priceSortCondition = `ORDER BY p.price ${sort === 'desc' ? 'DESC' : 'ASC'}`;
+        const priceCondition = ` AND p.price BETWEEN ? AND ?`; 
+        const priceSortCondition = ` ORDER BY p.price ${sort === 'desc' ? 'DESC' : 'ASC'}`;
 
         if (category) {
             categoryCondition += ` AND p.painting_id IN (

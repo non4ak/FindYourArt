@@ -38,26 +38,24 @@
         </div>
     </nav>
     <div class="container d-flex flex-column justify-content-center" style="margin-top: 6%; max-width: 400px;">
-        <form action="/login" method="post">
+        <form>
             <p class="h6 text-start">Логін</p>
             <div class="input-group mb-3">
                 <input type="text" class="form-control" placeholder="Введіть логін" aria-label="Имя пользователя"
-                    aria-describedby="basic-addon1" name="login" value="<%= inputData.login %>" required>
+                    aria-describedby="basic-addon1" name="login" required>
             </div>
             <p class="h6 text-start">Пароль</p>
             <div class="input-group mb-3">
                 <input type="password" class="form-control" placeholder="Введіть пароль" aria-label="Имя пользователя"
-                    aria-describedby="basic-addon1" id="passwordInput" name="password" value="<%= inputData.password %>" required>
+                    aria-describedby="basic-addon1" id="passwordInput" name="password" required>
                 <span class="input-group-text material-icons" id="eyeIcon">visibility_off</span>
             </div>
             <button class="btn btn-outline-secondary w-100 mt-2" type="submit" id="loginButton"
                 style="width: 15%;">Увійти</button>
             <p>У вас немає аккаунту? <a href="/register">Реєстрація</a></p>
-            <% if (message) { %>
-                <div class="alert alert-danger" role="alert">
-                    <%= message %>
-                </div>
-            <% } %>
+            <div class="alert alert-danger" role="alert" id="alert-container" style="display:none;">
+        
+            </div>
         </form>
     </div>        
     <script>
@@ -74,13 +72,13 @@
             }
         });
         
-        document.getElementById("submitForm").addEventListener("click", function (event) {
+        document.getElementById("loginButton").addEventListener("click", function (event) {
             event.preventDefault();
 
             const username = document.querySelector('[name="login"]').value;
             const password = document.querySelector('[name="password"]').value;
 
-            makeRequest('/logib', 'POST', username, password);
+            makeRequest('/login', 'POST', username, password);
         });
 
         function makeRequest(path, method, ...data) {
@@ -103,11 +101,21 @@
                         return response.json();
                     })
                     .then((result) => {
-                        window.location.href = result.redirect;
+                        if (result.success === false) {
+                            showAlert(result.message);
+                        } else {
+                            window.location.href = result.redirect;
+                        }
                     })
                     .catch((err) => {
                         console.error('Error:', err);
                     });
+            }
+
+            function showAlert(message) {
+                const alertContainer = document.getElementById('alert-container');
+                alertContainer.textContent = message;
+                alertContainer.style.display = 'block'; 
             }
     </script>
 </body>

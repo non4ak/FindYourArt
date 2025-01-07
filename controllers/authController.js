@@ -2,7 +2,7 @@ const bcrypt = require('bcrypt');
 const { runDBcommand } = require('../db/connection');
 
 module.exports.getLoginPage = (req, res) => {
-    res.render('login.ejs', { message: '', inputData: {} });
+    res.render('login.ejs');
 };
 
 module.exports.postLogin = async (req, res) => {
@@ -12,19 +12,21 @@ module.exports.postLogin = async (req, res) => {
         const checkLogin = await runDBcommand(query, [data.login, data.login]);
 
         if (checkLogin.length === 0) {
-            return res.status(401).render('login.ejs', { message: "Невірний логін або пароль", inputData: data });
+            res.status(200).json({ success: false, redirect: '/login', message: 'Невірний логін або пароль'});
+            return;
         }
 
         const isMatch = await bcrypt.compare(data.password, checkLogin[0].password);
         if (!isMatch) {
-            return res.status(401).render('login.ejs', { message: "Невірний логін або пароль", inputData: data });
+            res.status(200).json({ success: false, redirect: '/login', message: 'Невірний логін або пароль'});
+            return;
         }
 
         req.session.user = { id: checkLogin[0].user_id, username: checkLogin[0].username };
-        res.status(201).redirect('/');  
+        res.status(201).json({ redirect: '/' });
     } catch (err) {
         console.log(err);
-        res.status(500).send("Internal server error.");
+        res.status(500).redirect('/');
     }
 };
 

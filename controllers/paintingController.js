@@ -1,3 +1,4 @@
+const { runDBcommand } = require('../db/connection');
 
 module.exports.getAddPainting = async (req, res) => {
     try {
