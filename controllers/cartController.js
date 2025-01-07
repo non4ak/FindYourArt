@@ -34,7 +34,14 @@ module.exports.getCart = async (req, res) => {
 
 module.exports.addToCart = async (req, res) => {
     try {
+        const isLoggedIn = !!req.session.user;
+        
+        if (!isLoggedIn) {
+            return res.redirect('/login');
+        }
+
         const userId = req.session.user.id;
+
         const paintingId = req.params.paintingId;
         let result = await runDBcommand('SELECT * FROM cart WHERE user_id = ?', [userId]);
         let cartId = result.length ? result[0].cart_id : null;
